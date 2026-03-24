@@ -1,17 +1,19 @@
 package main;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 2;
-	private static final int MAX_SELECTION = 2;
+    private static final int EXIT_SELECTION = 3;
+	private static final int MAX_SELECTION = 3;
 
-	private BankAccount userAccount;
+	private LinkedList<BankAccount> userAccounts;
     private Scanner keyboardInput;
 
     public MainMenu() {
-        this.userAccount = new BankAccount();
+        this.userAccounts = new LinkedList<>();
+        this.userAccounts.add(new BankAccount());
         this.keyboardInput = new Scanner(System.in);
     }
 
@@ -19,8 +21,8 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
         
         System.out.println("1. Make a deposit");
-        System.out.println("2. Exit the app");
-
+        System.out.println("2. Create a new account");
+        System.out.println("3. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -36,17 +38,29 @@ public class MainMenu {
         switch (selection) {
             case 1:
                 performDeposit();
+                break;
+            case 2:
+                createAccount();
+                break;
         }
     }
 
     public void performDeposit() {
         double depositAmount = -1;
+        int accountIndex = 0;
         while(depositAmount < 0) {
+            System.out.print("Which account would you like to deposit to: ");
+            accountIndex = getUserSelection(userAccounts.size()) - 1;
             System.out.print("How much would you like to deposit: ");
             depositAmount = keyboardInput.nextInt();
         }
-        userAccount.deposit(depositAmount);
+        this.userAccounts.get(accountIndex).deposit(depositAmount);
     }
+
+    public void createAccount() {
+    userAccounts.add(new BankAccount());
+    System.out.println("New account " + userAccounts.size() + " created!");
+    }   
 
     public void run() {
         int selection = -1;
@@ -61,5 +75,9 @@ public class MainMenu {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
     }
+
+    public int getNumberOfAccounts() {
+    return userAccounts.size();
+}
 
 }
