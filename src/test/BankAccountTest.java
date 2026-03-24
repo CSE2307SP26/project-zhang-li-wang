@@ -35,4 +35,20 @@ public class BankAccountTest {
     menu.createAccount();
     assertEquals(before + 1, menu.getNumberOfAccounts());
     }
+
+    @Test
+    public void testTransfer() {
+    MainMenu menu = new MainMenu();
+    menu.createAccount();
+
+    menu.getAccount(0).deposit(100);
+
+    double beforeFirst = menu.getAccount(0).getBalance();
+    double beforeSecond = menu.getAccount(1).getBalance();
+
+    menu.transfer(0, 1, 50);
+
+    assertEquals(beforeFirst - 50, menu.getAccount(0).getBalance(), 0.01);
+    assertEquals(beforeSecond + 50, menu.getAccount(1).getBalance(), 0.01);
+}
 }
