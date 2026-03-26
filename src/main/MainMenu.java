@@ -40,7 +40,22 @@ public class MainMenu {
                 performDeposit();
                 break;
             case 2:
+                performWithdraw();
+                break;
+            case 3:
+                checkBalance();
+                break;
+            case 4:
                 createAccount();
+                break;
+            case 5:
+                closeAccount();
+                break;
+            case 6:
+                performTransfer();
+                break;
+            case 7:
+                addInterest();
                 break;
         }
     }
