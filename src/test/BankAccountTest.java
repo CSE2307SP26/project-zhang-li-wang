@@ -1,6 +1,7 @@
 package test;
 
 import main.BankAccount;
+import main.MainMenu;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -26,6 +27,13 @@ public class BankAccountTest {
             //do nothing, test passes
         }
     }
+    
+    @Test
+    public void testCreateAdditionalAccount() {
+    MainMenu menu = new MainMenu();
+    int before = menu.getNumberOfAccounts();
+    menu.createAccount();
+    assertEquals(before + 1, menu.getNumberOfAccounts());
 
     @Test
     public void testAddInterest() {
