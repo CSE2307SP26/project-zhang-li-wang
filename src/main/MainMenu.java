@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 2;
-	private static final int MAX_SELECTION = 2;
+    private static final int EXIT_SELECTION = 4;
+	private static final int MAX_SELECTION = 4;
 
 	private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -19,8 +19,9 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
         
         System.out.println("1. Make a deposit");
-        System.out.println("2. Exit the app");
-
+        System.out.println("2. Check balance");
+        System.out.println("3. Exit the app");
+        System.out.println("4. Add interest");
     }
 
     public int getUserSelection(int max) {
@@ -36,6 +37,10 @@ public class MainMenu {
         switch (selection) {
             case 1:
                 performDeposit();
+                break;
+            case 4:
+                addInterest();
+                break;
         }
     }
 
@@ -57,6 +62,12 @@ public class MainMenu {
         }
     }
 
+    private void addInterest() {
+        System.out.print("Enter interest rate: ");
+        double rate = keyboardInput.nextDouble();
+        userAccount.addInterest(rate);
+    }
+    
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();

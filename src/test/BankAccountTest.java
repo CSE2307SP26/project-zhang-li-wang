@@ -26,4 +26,12 @@ public class BankAccountTest {
             //do nothing, test passes
         }
     }
-}
+
+    @Test
+    public void testAddInterest() {
+        BankAccount account = new BankAccount();
+        account.deposit(100);
+        account.addInterest(0.05); 
+        assertEquals(105, account.getBalance(), 0.01);
+    }
+} 
