@@ -21,6 +21,18 @@
 
 ## What user stories do you intend to complete next iteration?
 
+We plan to extend the current system beyond basic deposit functionality. Specifically, we aim to add support for multiple accounts, account creation, withdrawals, balance checking, and money transfer between accounts.
+
 ## Is there anything that you implemented but doesn't currently work?
 
+At this stage, all implemented features are working as expected. The system correctly supports deposits and handles invalid inputs by throwing exceptions.
+
+However, the application is still limited in functionality and does not yet support additional banking features such as transfers or multiple accounts.
+
 ## What commands are needed to compile and run your code from the command line?
+
+From the src directory, run:
+
+javac main/*.java test/*.java
+
+java main.MainMenu
