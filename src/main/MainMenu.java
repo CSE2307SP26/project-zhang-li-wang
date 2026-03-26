@@ -81,6 +81,13 @@ public class MainMenu {
             processInput(selection);
         }
     }
+
+    private void addInterest() {
+        System.out.print("Enter interest rate: ");
+        double rate = keyboardInput.nextDouble();
+        userAccount.addInterest(rate);
+    }
+    
     
     private void checkBalance() {
         double balance = userAccount.getBalance();
