@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 4;
-	private static final int MAX_SELECTION = 4;
+    private static final int EXIT_SELECTION = 8;
+	private static final int MAX_SELECTION = 8;
 
 	private LinkedList<BankAccount> userAccounts;
     private Scanner keyboardInput;
@@ -43,10 +43,22 @@ public class MainMenu {
                 performDeposit();
                 break;
             case 2:
-                createAccount();
+                performWithdraw();
                 break;
             case 3:
+                checkBalance();
+                break;
+            case 4:
+                createAccount();
+                break;
+            case 5:
+                closeAccount();
+                break;
+            case 6:
                 performTransfer();
+                break;
+            case 7:
+                addInterest();
                 break;
         }
     }
