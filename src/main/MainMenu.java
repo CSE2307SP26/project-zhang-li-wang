@@ -60,6 +60,7 @@ public class MainMenu {
         case 7:
             addInterest();
             break;
+
         }
     }
 
@@ -87,6 +88,11 @@ public class MainMenu {
         userAccount.addInterest(rate);
     }
     
+    
+    private void checkBalance() {
+        double balance = userAccount.getBalance();
+        System.out.println("Current balance: $" + balance);
+    }
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();

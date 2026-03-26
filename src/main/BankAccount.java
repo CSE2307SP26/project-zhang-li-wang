@@ -24,4 +24,5 @@ public class BankAccount {
         double interest = balance * rate;
         balance += interest;
     }
+    
 }
