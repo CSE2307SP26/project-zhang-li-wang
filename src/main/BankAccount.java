@@ -16,6 +16,17 @@ public class BankAccount {
         }
     }
 
+    // add withdraw function for transfer functionality
+    public void withdraw(double amount) {
+    if (amount < 0) {
+        throw new IllegalArgumentException();
+    }
+    if (amount > balance) {
+        throw new IllegalArgumentException();
+    }
+    balance -= amount;
+}
+
     public double getBalance() {
         return this.balance;
     }

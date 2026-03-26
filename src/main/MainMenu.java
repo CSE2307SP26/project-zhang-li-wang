@@ -12,11 +12,13 @@ public class MainMenu {
     private Scanner keyboardInput;
 
     public MainMenu() {
+        //use linked list to store accounts
         this.userAccounts = new LinkedList<>();
         this.userAccounts.add(new BankAccount());
         this.keyboardInput = new Scanner(System.in);
     }
 
+    // display options to the user
     public void displayOptions() {
         System.out.println("Welcome to the 237 Bank App!");
         System.out.println("1. Deposit into an existing account");
@@ -83,6 +85,22 @@ public class MainMenu {
     System.out.println("New account " + userAccounts.size() + " created!");
     }   
 
+    public void performTransfer() {
+        double transferAmount = 0.0;
+        System.out.print("Which account would you like to transfer from: ");
+        int fromIndex = getUserSelection(userAccounts.size()) - 1;
+        System.out.print("Which account would you like to transfer to: ");
+        int toIndex = getUserSelection(userAccounts.size()) - 1;
+        System.out.print("How much would you like to transfer: ");
+        transferAmount = keyboardInput.nextInt();
+        transfer(fromIndex, toIndex, transferAmount);
+    }
+
+    public void transfer(int fromIndex, int toIndex, double amount) {
+    userAccounts.get(fromIndex).withdraw(amount);
+    userAccounts.get(toIndex).deposit(amount);
+    }
+
     public void run() {
         int selection = -1;
         while(selection != EXIT_SELECTION) {
@@ -108,8 +126,12 @@ public class MainMenu {
         bankApp.run();
     }
 
+    // helper functions for testing
     public int getNumberOfAccounts() {
     return userAccounts.size();
-}
+    }
 
+    public BankAccount getAccount(int index) {
+    return userAccounts.get(index);
+    }   
 }
