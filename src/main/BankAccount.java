@@ -19,4 +19,15 @@ public class BankAccount {
     public double getBalance() {
         return this.balance;
     }
+
+    private boolean isClosed;
+
+    public boolean isClosed() {
+        return this.isClosed;
+    }
+
+    public void close() {
+        this.isClosed = true;
+        System.out.println("Your account has been closed.");
+    }
 }
