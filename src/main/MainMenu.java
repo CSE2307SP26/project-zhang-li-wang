@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 2;
-	private static final int MAX_SELECTION = 2;
+    private static final int EXIT_SELECTION = 3;
+	private static final int MAX_SELECTION = 3;
 
 	private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -17,10 +17,15 @@ public class MainMenu {
 
     public void displayOptions() {
         System.out.println("Welcome to the 237 Bank App!");
-        
-        System.out.println("1. Make a deposit");
-        System.out.println("2. Exit the app");
-
+        System.out.println("1. Deposit into an existing account");
+        System.out.println("2. Withdraw from an account");
+        System.out.println("3. Check account balance");
+        System.out.println("4. Create an additional account");
+        System.out.println("5. Close an existing account");
+        System.out.println("6. Transfer money between accounts");
+        System.out.println("7. Add interest payment (Admin)");
+        System.out.println("8. Exit the app");
+}
     }
 
     public int getUserSelection(int max) {
@@ -34,8 +39,28 @@ public class MainMenu {
 
     public void processInput(int selection) {
         switch (selection) {
-            case 1:
-                performDeposit();
+        case 1:
+            performDeposit();
+            break;
+        case 2:
+            performWithdraw();
+            break;
+        case 3:
+            checkBalance();
+            break;
+        case 4:
+            createAccount();
+            break;
+        case 5:
+            closeAccount();
+            break;
+        case 6:
+            performTransfer();
+            break;
+        case 7:
+            addInterest();
+            break;
+
         }
     }
 
@@ -56,7 +81,11 @@ public class MainMenu {
             processInput(selection);
         }
     }
-
+    
+    private void checkBalance() {
+        double balance = userAccount.getBalance();
+        System.out.println("Current balance: $" + balance);
+    }
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
