@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 2;
-	private static final int MAX_SELECTION = 2;
+    private static final int EXIT_SELECTION = 3;
+	private static final int MAX_SELECTION = 3;
 
 	private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -20,6 +20,7 @@ public class MainMenu {
         
         System.out.println("1. Make a deposit");
         System.out.println("2. Exit the app");
+        System.out.println("3. Exit the app");
 
     }
 
@@ -36,6 +37,13 @@ public class MainMenu {
         switch (selection) {
             case 1:
                 performDeposit();
+                break;
+            case 2:
+                performWithdraw();
+                break;
+            case 3:
+                System.out.println("Thank you for using the 237 Bank App!");
+                break;
         }
     }
 
@@ -47,6 +55,16 @@ public class MainMenu {
         }
         userAccount.deposit(depositAmount);
     }
+
+    public void performWithdraw() {
+        double withdrawAmount = -1;
+        while(withdrawAmount < 0) {
+            System.out.print("How much would you like to withdraw: ");
+            withdrawAmount = keyboardInput.nextInt();
+        }
+        userAccount.withdraw(withdrawAmount);
+    }
+    
 
     public void run() {
         int selection = -1;
