@@ -30,4 +30,10 @@ public class BankAccount {
     public double getBalance() {
         return this.balance;
     }
+
+    public void addInterest(double rate) {
+        double interest = balance * rate;
+        balance += interest;
+    }
+    
 }
