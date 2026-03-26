@@ -26,4 +26,12 @@ public class BankAccountTest {
             //do nothing, test passes
         }
     }
+
+    @Test
+    public void testCheckBalance() {
+        BankAccount account = new BankAccount();
+        account.deposit(100);
+        double balance = account.getBalance();
+        assertEquals(100, balance, 0.01);
+    }
 }
