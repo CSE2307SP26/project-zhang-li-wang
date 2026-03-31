@@ -2,8 +2,9 @@ package test;
 
 import main.BankAccount;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,11 +20,18 @@ public class BankAccountTest {
     @Test
     public void testInvalidDeposit() {
         BankAccount testAccount = new BankAccount();
-        try {
-            testAccount.deposit(-50);
-            fail();
-        } catch (IllegalArgumentException e) {
-            //do nothing, test passes
-        }
+        assertThrows(IllegalArgumentException.class, () -> testAccount.deposit(-50));
+    }
+
+    @Test
+    public void testCloseAccount() {
+        BankAccount testAccount = new BankAccount(0.02);
+        testAccount.deposit(50);
+        testAccount.close();
+
+        assertTrue(testAccount.isClosed());
+        assertEquals(0, testAccount.getBalance(), 0.01);
+        assertEquals(0.02, testAccount.getInterestRate(), 0.001);
+        assertThrows(IllegalStateException.class, () -> testAccount.deposit(10));
     }
 }
