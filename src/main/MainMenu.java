@@ -85,7 +85,7 @@ public class MainMenu {
             System.out.print("How much would you like to deposit: ");
             depositAmount = keyboardInput.nextDouble();
         }
-        bank.depositToAccount(accountIndex, depositAmount)
+        
         try {
             bank.depositToAccount(accountIndex, depositAmount);
             System.out.println("Deposit successful.");
@@ -103,8 +103,8 @@ public class MainMenu {
             bank.withdrawFromAccount(accountIndex, withdrawAmount);
             System.out.println("Withdrawal successful.");
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid operation. Please try again.");
-    }
+            System.out.println("Invalid operation. Please try again."); 
+        }
     }
 
     public void createAccount() {
@@ -122,7 +122,7 @@ public class MainMenu {
             System.out.println("Invalid operation. Please try again.");
         }
     }
-}
+
     public void performTransfer() {
         double transferAmount = 0.0;
         System.out.print("Which account would you like to transfer from: ");
