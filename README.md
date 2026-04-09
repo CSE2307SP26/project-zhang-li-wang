@@ -21,8 +21,10 @@
 10. A bank customer should be able to receive an error message when performing an invalid operation. (Tiancheng Zhang)
 
 Iteration2:
-1.A bank adminstrator should be able to collect fees from existing accounts when necessary.(Tianwei Wang)
-2.A user should be able to set a 4-digit PIN for their account. (Tianwei Wang)
+1. A bank adminstrator should be able to collect fees from existing accounts when necessary.(Tianwei Wang)
+2. A user should be able to set a 4-digit PIN for their account. (Tianwei Wang)
+3. A bank customer should be able to view a summary of their account including balance, interest rate, and whether a PIN is set. (Tiancheng Zhang)
+4. A bank customer should be able to receive an error message when performing an invalid operation. (Tiancheng Zhang)
 
 ## What user stories do you intend to complete next iteration?
 
