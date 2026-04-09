@@ -20,6 +20,10 @@
 9. A bank adminstrator should be able to add an interest payment to an existing account when necessary. (Tianwei Wang)
 10. A bank customer should be able to receive an error message when performing an invalid operation. (Tiancheng Zhang)
 
+Iteration2:
+1.A bank adminstrator should be able to collect fees from existing accounts when necessary.(Tianwei Wang)
+2.A user should be able to set a 4-digit PIN for their account. (Tianwei Wang)
+
 ## What user stories do you intend to complete next iteration?
 
 We plan to extend the current system beyond basic deposit functionality. Specifically, we aim to add support for multiple accounts, account creation, withdrawals, balance checking, and money transfer between accounts.
@@ -32,6 +36,7 @@ At this stage, all implemented features are working as expected. The system corr
 However, the application is still limited in functionality and does not yet support additional banking features such as transfers or multiple accounts.
 
 ## What commands are needed to compile and run your code from the command line?
+To compile and run the program, simply run runApp.sh: bash runApp.sh
 
 From the src directory, run:
 
