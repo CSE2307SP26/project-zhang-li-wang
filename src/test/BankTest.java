@@ -2,10 +2,12 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import main.Bank;
+import main.BankAccount;
 
 public class BankTest {
 
@@ -46,5 +48,17 @@ public class BankTest {
 
         assertEquals(50, bank.getBalance(0), 0.01);
         assertEquals(50, bank.getBalance(1), 0.01);
+    }
+
+    @Test
+    public void testAccountSummaryShowsBalanceInterestAndPinStatus() {
+        BankAccount account = new BankAccount(0.05);
+        account.deposit(100.0);
+
+        String summary = account.getSummary();
+
+        assertTrue(summary.contains("100.0"));
+        assertTrue(summary.contains("0.05"));
+        assertTrue(summary.contains("No PIN set"));
     }
 }
