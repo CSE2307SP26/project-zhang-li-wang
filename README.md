@@ -18,6 +18,7 @@
 7. A bank customer should be able to transfer money from one account to another. (Da)
 8. A bank adminstrator should be able to collect fees from existing accounts when necessary.(Tianwei Wang)
 9. A bank adminstrator should be able to add an interest payment to an existing account when necessary. (Tianwei Wang)
+10. A bank customer should be able to receive an error message when performing an invalid operation. (Tiancheng Zhang)
 
 ## What user stories do you intend to complete next iteration?
 
