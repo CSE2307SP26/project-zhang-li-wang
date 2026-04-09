@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 9;
-    private static final int MAX_SELECTION = 9;
+    private static final int EXIT_SELECTION = 10;
+    private static final int MAX_SELECTION = 10;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -29,7 +29,8 @@ public class MainMenu {
         System.out.println("6. Transfer money between accounts");
         System.out.println("7. Add interest payment (Admin)");
         System.out.println("8. Set account PIN");
-        System.out.println("9. Exit the app");
+        System.out.println("9. Collect fee from an existing account (Admin)");
+        System.out.println("10. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -66,6 +67,9 @@ public class MainMenu {
                 break;
             case 8:
                 setAccountPin();
+                break;
+            case 9:
+                collectFee();
                 break;
             default:
                 break;
@@ -151,6 +155,19 @@ public class MainMenu {
             System.out.println("PIN set successfully.");
         } else {
             System.out.println("Invalid PIN. Please enter a 4-digit number.");
+        }
+    }
+
+    public void collectFee() {
+        System.out.print(" Which account would you like to collect a fee from: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        System.out.print("Enter fee amount: ");
+        double fee = keyboardInput.nextDouble();
+        boolean success = bank.collectFeeFromAccount(accountIndex, fee);
+        if (success) {
+            System.out.println(" Fee collected successfully. ");
+        } else {
+            System.out.println(" Failed to collect fee. ");
         }
     }
 
