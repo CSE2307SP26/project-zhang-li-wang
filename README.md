@@ -5,7 +5,7 @@
 * Tianwei Wang
 * Da Li
 * Tiancheng Zhang
-* 
+  
 
 ## User stories
 
@@ -16,12 +16,13 @@
 5. A bank customer should be able to create an additional account with the bank. (Da)
 6. A bank customer should be able to close an existing account.
 7. A bank customer should be able to transfer money from one account to another. (Da)
-8. A bank adminstrator should be able to collect fees from existing accounts when necessary.(x)
+8. A bank adminstrator should be able to collect fees from existing accounts when necessary.(Tianwei Wang)
 9. A bank adminstrator should be able to add an interest payment to an existing account when necessary. (Tianwei Wang)
 
 ## What user stories do you intend to complete next iteration?
 
 We plan to extend the current system beyond basic deposit functionality. Specifically, we aim to add support for multiple accounts, account creation, withdrawals, balance checking, and money transfer between accounts.
+We intend to complete user stories related to account security, account types, and improved account management in the next iteration.
 
 ## Is there anything that you implemented but doesn't currently work?
 
