@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 8;
-    private static final int MAX_SELECTION = 8;
+    private static final int EXIT_SELECTION = 9;
+    private static final int MAX_SELECTION = 9;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -28,7 +28,8 @@ public class MainMenu {
         System.out.println("5. Close an existing account");
         System.out.println("6. Transfer money between accounts");
         System.out.println("7. Add interest payment (Admin)");
-        System.out.println("8. Exit the app");
+        System.out.println("8. Set account PIN");
+        System.out.println("9. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -62,6 +63,9 @@ public class MainMenu {
                 break;
             case 7:
                 addInterest();
+                break;
+            case 8:
+                setAccountPin();
                 break;
             default:
                 break;
@@ -135,6 +139,19 @@ public class MainMenu {
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
         double balance = bank.getBalance(accountIndex);
         System.out.println("Current balance: $" + balance);
+    }
+
+    public void setAccountPin() {
+        System.out.print("Which account would you like to set the PIN for: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        System.out.print("Enter a 4-digit PIN: ");
+        String pin = keyboardInput.next();
+        boolean success = bank.setAccountPin(accountIndex, pin);
+        if (success) {
+            System.out.println("PIN set successfully.");
+        } else {
+            System.out.println("Invalid PIN. Please enter a 4-digit number.");
+        }
     }
 
     public static void main(String[] args) {

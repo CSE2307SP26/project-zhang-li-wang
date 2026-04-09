@@ -3,8 +3,11 @@ package test;
 import main.BankAccount;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,4 +52,21 @@ public class BankAccountTest {
         BankAccount account = new BankAccount();
         assertThrows(IllegalArgumentException.class, () -> account.withdraw(10));
     }
+
+    @Test
+    public void testSetValidPin() {
+        BankAccount account = new BankAccount();
+        boolean result = account.setPin("1234");
+        assertTrue(result);
+        assertEquals("1234", account.getPin());
+    }
+
+    @Test
+    public void testSetInvalidPinWithLetters() {
+        BankAccount account = new BankAccount();
+        boolean result = account.setPin("12a4");
+        assertFalse(result);
+        assertNull(account.getPin());
+    }
+
 }
