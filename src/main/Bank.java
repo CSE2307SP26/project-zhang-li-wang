@@ -52,4 +52,8 @@ public class Bank {
     public BankAccount getAccount(int index) {
         return userAccounts.get(index);
     }
+
+    public boolean setAccountPin(int accountIndex, String pin) {
+        return userAccounts.get(accountIndex).setPin(pin);
+    }
 }

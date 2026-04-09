@@ -4,6 +4,7 @@ public class BankAccount {
 
     private double balance;
     private double interestRate;
+    private String pin;
 
     public BankAccount() {
         this(0.0);
@@ -51,5 +52,19 @@ public class BankAccount {
         double interest = balance * interestRate;
         balance += interest;
     }
+    
+    public boolean setPin(String pin) {
+        if (pin != null && pin.matches("\\d{4}")) {
+            this.pin = pin;
+            return true;
+        }
+        return false;
+    }
 
+    public String getPin() {
+        return pin;
+    }
+    
+    
+    
 }
