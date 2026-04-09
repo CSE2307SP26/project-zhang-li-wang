@@ -68,5 +68,22 @@ public class BankAccountTest {
         assertFalse(result);
         assertNull(account.getPin());
     }
+    
+    @Test
+    public void testCollectValidFee() {
+        BankAccount account = new BankAccount();
+        account.deposit(100.0);
+        boolean result = account.collectFee(20.0);
+        assertTrue(result);
+        assertEquals(80.0, account.getBalance(), 0.001);
+    }
 
+    @Test
+    public void testCollectFeeTooLarge() {
+        BankAccount account = new BankAccount();
+        account.deposit(50.0);
+        boolean result = account.collectFee(100.0);
+        assertFalse(result);
+        assertEquals(50.0, account.getBalance(), 0.001);
+    }
 }

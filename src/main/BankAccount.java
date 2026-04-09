@@ -64,7 +64,13 @@ public class BankAccount {
     public String getPin() {
         return pin;
     }
-    
-    
+
+    public boolean collectFee(double fee) {
+        if (fee > 0 && fee <= balance) {
+            balance -= fee;
+            return true;
+        }
+        return false;
+    }  
     
 }
