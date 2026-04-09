@@ -85,7 +85,13 @@ public class MainMenu {
             System.out.print("How much would you like to deposit: ");
             depositAmount = keyboardInput.nextDouble();
         }
-        bank.depositToAccount(accountIndex, depositAmount);
+        bank.depositToAccount(accountIndex, depositAmount)
+        try {
+            bank.depositToAccount(accountIndex, depositAmount);
+            System.out.println("Deposit successful.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid operation. Please try again.");
+        }
     }
 
     public void performWithdraw() {
@@ -93,7 +99,12 @@ public class MainMenu {
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
         System.out.print("How much would you like to withdraw: ");
         double withdrawAmount = keyboardInput.nextDouble();
-        bank.withdrawFromAccount(accountIndex, withdrawAmount);
+        try {
+            bank.withdrawFromAccount(accountIndex, withdrawAmount);
+            System.out.println("Withdrawal successful.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid operation. Please try again.");
+    }
     }
 
     public void createAccount() {
@@ -104,10 +115,14 @@ public class MainMenu {
     public void closeAccount() {
         System.out.print("Which account would you like to close: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
-        bank.closeAccount(accountIndex);
-        System.out.println("Account closed.");
+        try {
+            bank.closeAccount(accountIndex);
+            System.out.println("Account closed.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid operation. Please try again.");
+        }
     }
-
+}
     public void performTransfer() {
         double transferAmount = 0.0;
         System.out.print("Which account would you like to transfer from: ");
@@ -116,7 +131,12 @@ public class MainMenu {
         int toIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
         System.out.print("How much would you like to transfer: ");
         transferAmount = keyboardInput.nextDouble();
-        bank.transfer(fromIndex, toIndex, transferAmount);
+        try {
+            bank.transfer(fromIndex, toIndex, transferAmount);
+            System.out.println("Transfer successful.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid operation. Please try again.");
+        }
     }
 
     public void run() {
@@ -135,7 +155,12 @@ public class MainMenu {
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
         System.out.print("Enter interest rate: ");
         double rate = keyboardInput.nextDouble();
-        bank.addInterest(accountIndex, rate);
+        try {
+            bank.addInterest(accountIndex, rate);
+            System.out.println("Interest added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid operation. Please try again.");
+        }
     }
 
     public void checkBalance() {

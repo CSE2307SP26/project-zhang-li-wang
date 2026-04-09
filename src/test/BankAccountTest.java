@@ -87,3 +87,12 @@ public class BankAccountTest {
         assertEquals(50.0, account.getBalance(), 0.001);
     }
 }
+    @Test
+    public void testSetInvalidPinWithWrongLength() {
+        BankAccount account = new BankAccount();
+        boolean result = account.setPin("12345");
+        assertFalse(result);
+        assertNull(account.getPin());
+    }
+
+    
