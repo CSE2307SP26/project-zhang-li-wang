@@ -5,6 +5,7 @@ public class BankAccount {
     private double balance;
     private double interestRate;
     private String pin;
+    private boolean isClosed = false;
 
     public BankAccount() {
         this(0.0);
@@ -72,5 +73,9 @@ public class BankAccount {
         }
         return false;
     }  
-    
+
+    public String getSummary() {
+        String pinStatus = (pin != null) ? "PIN set" : "No PIN set";
+        return "Balance: $" + balance + ", Interest Rate: " + interestRate + ", " + pinStatus;
+    }
 }

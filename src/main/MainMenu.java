@@ -171,6 +171,13 @@ public class MainMenu {
         }
     }
 
+    public void viewAccountSummary() {
+        System.out.print("Which account would you like to view: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        BankAccount account = bank.getAccount(accountIndex);
+        System.out.println(account.getSummary());
+    }
+
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
