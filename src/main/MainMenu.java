@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 10;
-    private static final int MAX_SELECTION = 10;
+    private static final int EXIT_SELECTION = 11;
+    private static final int MAX_SELECTION = 11;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -30,7 +30,8 @@ public class MainMenu {
         System.out.println("7. Add interest payment (Admin)");
         System.out.println("8. Set account PIN");
         System.out.println("9. Collect fee from an existing account (Admin)");
-        System.out.println("10. Exit the app");
+        System.out.println("10. View transaction history");
+        System.out.println("11. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -70,6 +71,9 @@ public class MainMenu {
                 break;
             case 9:
                 collectFee();
+                break;
+            case 10:
+                viewTransactionHistory();
                 break;
             default:
                 break;
@@ -201,6 +205,18 @@ public class MainMenu {
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
         BankAccount account = bank.getAccount(accountIndex);
         System.out.println(account.getSummary());
+    }
+
+    public void viewTransactionHistory() {
+        System.out.print("Which account would you like to view: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        BankAccount account = bank.getAccount(accountIndex);
+        for (String entry : account.getTransactionHistory()) {
+            System.out.println(entry);
+        }
+        if (account.getTransactionHistory().isEmpty()) {
+            System.out.println("No transaction history available.");
+        }
     }
 
     public static void main(String[] args) {

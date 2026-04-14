@@ -61,4 +61,12 @@ public class BankTest {
         assertTrue(summary.contains("0.05"));
         assertTrue(summary.contains("No PIN set"));
     }
+
+    @Test
+    public void testBankAccountTransactionHistoryViaBank() {
+        Bank bank = new Bank();
+        bank.depositToAccount(0, 42.0);
+
+        assertEquals("Deposit: $42.0", bank.getAccount(0).getTransactionHistory().get(0));
+    }
 }

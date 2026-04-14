@@ -86,7 +86,7 @@ public class BankAccountTest {
         assertFalse(result);
         assertEquals(50.0, account.getBalance(), 0.001);
     }
-}
+
     @Test
     public void testSetInvalidPinWithWrongLength() {
         BankAccount account = new BankAccount();
@@ -95,4 +95,25 @@ public class BankAccountTest {
         assertNull(account.getPin());
     }
 
-    
+    @Test
+    public void testTransactionHistoryRecordsDepositAndWithdrawal() {
+        BankAccount account = new BankAccount();
+        account.deposit(100.0);
+        account.withdraw(25.0);
+
+        assertEquals(2, account.getTransactionHistory().size());
+        assertEquals("Deposit: $100.0", account.getTransactionHistory().get(0));
+        assertEquals("Withdrawal: $25.0", account.getTransactionHistory().get(1));
+    }
+
+    @Test
+    public void testTransactionHistoryReturnsCopy() {
+        BankAccount account = new BankAccount();
+        account.deposit(20.0);
+        java.util.List<String> history = account.getTransactionHistory();
+        history.add("Tamper");
+
+        assertEquals(1, account.getTransactionHistory().size());
+        assertEquals("Deposit: $20.0", account.getTransactionHistory().get(0));
+    }
+}
