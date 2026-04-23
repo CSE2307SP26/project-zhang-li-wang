@@ -26,6 +26,10 @@ Iteration2:
 3. A bank customer should be able to view a summary of their account including balance, interest rate, and whether a PIN is set. (Tiancheng Zhang)
 4. A bank customer should be able to receive an error message when performing an invalid operation. (Tiancheng Zhang)
 
+Iteration3:
+1. A user should be able to use a 4-digit PIN to protect their account operations. (Tianwei Wang)
+2. A bank customer should be able to view their transaction history for an account. (Da)
+
 ## What user stories do you intend to complete next iteration?
 
 We plan to extend the current system beyond basic deposit functionality. Specifically, we aim to add support for multiple accounts, account creation, withdrawals, balance checking, and money transfer between accounts.
