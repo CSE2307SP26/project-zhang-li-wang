@@ -129,4 +129,18 @@ public class BankAccountTest {
         assertFalse(account.checkPin("0000"));
     }
 
+    @Test
+    public void testFreezeAccount() {
+        BankAccount account = new BankAccount();
+        account.freezeAccount();
+        assertTrue(account.isFrozen());
+    }
+
+    @Test
+    public void testUnfreezeAccount() {
+        BankAccount account = new BankAccount();
+        account.freezeAccount();
+        account.unfreezeAccount();
+        assertFalse(account.isFrozen());
+    }
 }

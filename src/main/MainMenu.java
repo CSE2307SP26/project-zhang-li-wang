@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 11;
-    private static final int MAX_SELECTION = 11;
+    private static final int EXIT_SELECTION = 13;
+    private static final int MAX_SELECTION = 13;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -31,7 +31,9 @@ public class MainMenu {
         System.out.println("8. Set account PIN");
         System.out.println("9. Collect fee from an existing account (Admin)");
         System.out.println("10. View transaction history");
-        System.out.println("11. Exit the app");
+        System.out.println("11. Freeze an account (Admin)");
+        System.out.println("12. Unfreeze an account (Admin)");
+        System.out.println("13. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -75,6 +77,12 @@ public class MainMenu {
             case 10:
                 viewTransactionHistory();
                 break;
+            case 11:
+                freezeAccount();
+                break;
+            case 12:
+                unfreezeAccount();
+                break;
             default:
                 break;
         }
@@ -107,6 +115,11 @@ public class MainMenu {
 
         if (!bank.verifyAccountPin(accountIndex, pin)) {
             System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        if (bank.isAccountFrozen(accountIndex)) {
+            System.out.println("This account is frozen.");
             return;
         }
 
@@ -156,6 +169,11 @@ public class MainMenu {
             return;
         }
 
+        if (bank.isAccountFrozen(fromIndex)) {
+            System.out.println("This account is frozen.");
+            return;
+        }
+
         System.out.print("Which account would you like to transfer to: ");
         int toIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
 
@@ -167,8 +185,8 @@ public class MainMenu {
             System.out.println("Transfer successful.");
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid operation. Please try again.");
-        } 
-    }   
+        }
+    }  
 
     public void run() {
         int selection = -1;
@@ -270,5 +288,19 @@ public class MainMenu {
         System.out.print("Enter PIN for this account: ");
         String pin = keyboardInput.next();
         return bank.verifyAccountPin(accountIndex, pin);
+    }
+
+    public void freezeAccount() {
+        System.out.print("Which account would you like to freeze: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        bank.freezeAccount(accountIndex);
+        System.out.println("Account frozen.");
+    }
+
+    public void unfreezeAccount() {
+        System.out.print("Which account would you like to unfreeze: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        bank.unfreezeAccount(accountIndex);
+        System.out.println("Account unfrozen.");
     }
 }
