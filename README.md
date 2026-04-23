@@ -29,6 +29,9 @@ Iteration3:
 1. A user should be able to use a 4-digit PIN to protect their account operations. (Tianwei Wang)
 2. A bank administrator should be able to freeze or unfreeze an account. （Tianwei Wang）
 3. A bank customer should be able to view their transaction history for an account. (Da)
+4. A bank customer should be able to calculate a loan monthly payment based on principal, APR, and term (Tiancheng Zhang)
+5. A bank customer should be able to estimate how long it takes to reach a savings goal with fixed monthly deposits. (Tiancheng Zhang)
+
 
 ## What user stories do you intend to complete next iteration?
 
