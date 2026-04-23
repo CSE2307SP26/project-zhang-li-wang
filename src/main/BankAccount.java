@@ -1,11 +1,15 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BankAccount {
 
     private double balance;
     private double interestRate;
     private String pin;
     private boolean isClosed = false;
+    private final List<String> transactionHistory = new ArrayList<>();
 
     public BankAccount() {
         this(0.0);
@@ -19,6 +23,7 @@ public class BankAccount {
     public void deposit(double amount) {
         if (amount > 0) {
             this.balance += amount;
+            transactionHistory.add("Deposit: $" + amount);
         } else {
             throw new IllegalArgumentException();
         }
@@ -32,6 +37,7 @@ public class BankAccount {
             throw new IllegalArgumentException();
         }
         balance -= amount;
+        transactionHistory.add("Withdrawal: $" + amount);
     }
 
     public double getBalance() {
@@ -77,6 +83,10 @@ public class BankAccount {
         }
         return false;
     }  
+
+    public List<String> getTransactionHistory() {
+        return new ArrayList<>(transactionHistory);
+    }
 
     public String getSummary() {
         String pinStatus = (pin != null) ? "PIN set" : "No PIN set";
