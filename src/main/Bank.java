@@ -78,4 +78,18 @@ public class Bank {
     public boolean isAccountFrozen(int accountIndex) {
         return userAccounts.get(accountIndex).isFrozen();
     }
+
+    public double calculateLoanMonthlyPayment(double principal, double apr, int termMonths) {
+        if (principal <= 0 || apr < 0 || termMonths <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        double monthlyRate = apr / 100.0 / 12.0;
+        if (monthlyRate == 0) {
+            return principal / termMonths;
+        }
+
+        double growthFactor = Math.pow(1 + monthlyRate, termMonths);
+        return principal * monthlyRate * growthFactor / (growthFactor - 1);
+    }
 }
