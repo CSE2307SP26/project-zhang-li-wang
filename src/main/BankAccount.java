@@ -25,7 +25,7 @@ public class BankAccount {
     }
 
     public void withdraw(double amount) {
-        if (amount < 0) {
+        if (amount <= 0) {
             throw new IllegalArgumentException();
         }
         if (amount > balance) {
@@ -64,6 +64,10 @@ public class BankAccount {
 
     public String getPin() {
         return pin;
+    }
+
+    public boolean checkPin(String pin) {
+        return this.pin != null && this.pin.equals(pin);
     }
 
     public boolean collectFee(double fee) {
