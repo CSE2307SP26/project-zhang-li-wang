@@ -116,4 +116,17 @@ public class BankAccountTest {
         assertEquals(1, account.getTransactionHistory().size());
         assertEquals("Deposit: $20.0", account.getTransactionHistory().get(0));
     }
+    public void testCheckCorrectPin() {
+        BankAccount account = new BankAccount();
+        account.setPin("1234");
+        assertTrue(account.checkPin("1234"));
+    }
+
+    @Test
+    public void testCheckWrongPin() {
+        BankAccount account = new BankAccount();
+        account.setPin("1234");
+        assertFalse(account.checkPin("0000"));
+    }
+
 }
