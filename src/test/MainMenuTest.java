@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Scanner;
 
@@ -51,5 +52,15 @@ public class MainMenuTest {
         MainMenu menu = new MainMenu(bank, new Scanner(""));
 
         assertDoesNotThrow(menu::displayUnreadAlerts);
+    }
+
+    @Test
+    public void testProcessInputEnablesOverdraftProtection() {
+        Bank bank = new Bank();
+        bank.setAccountPin(0, "1234");
+        MainMenu menu = new MainMenu(bank, new Scanner("1 1234 300 20"));
+
+        assertDoesNotThrow(() -> menu.processInput(16));
+        assertTrue(bank.getAccount(0).isOverdraftProtectionEnabled());
     }
 }

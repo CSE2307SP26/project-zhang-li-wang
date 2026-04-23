@@ -5,8 +5,8 @@ import java.time.LocalDate;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 16;
-    private static final int MAX_SELECTION = 16;
+    private static final int EXIT_SELECTION = 17;
+    private static final int MAX_SELECTION = 17;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -37,7 +37,8 @@ public class MainMenu {
         System.out.println("13. Calculate loan monthly payment");
         System.out.println("14. Estimate months to reach savings goal");
         System.out.println("15. Schedule recurring bill payment");
-        System.out.println("16. Exit the app");
+        System.out.println("16. Enable overdraft protection");
+        System.out.println("17. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -95,6 +96,9 @@ public class MainMenu {
                 break;
             case 15:
                 scheduleRecurringBillPayment();
+                break;
+            case 16:
+                enableOverdraftProtection();
                 break;
             default:
                 break;
@@ -398,6 +402,28 @@ public class MainMenu {
             for (String alert : bank.getUnreadAlertsForAccount(accountIndex)) {
                 System.out.println("Account " + (accountIndex + 1) + " alert: " + alert);
             }
+        }
+    }
+
+    public void enableOverdraftProtection() {
+        System.out.print("Which account would you like to enable overdraft protection on: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        System.out.print("Enter overdraft limit: ");
+        double limit = keyboardInput.nextDouble();
+        System.out.print("Enter overdraft fee: ");
+        double fee = keyboardInput.nextDouble();
+
+        try {
+            bank.enableOverdraftProtection(accountIndex, limit, fee);
+            System.out.println("Overdraft protection enabled.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid overdraft settings.");
         }
     }
 }

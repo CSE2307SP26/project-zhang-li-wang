@@ -225,4 +225,37 @@ public class BankAccountTest {
         assertEquals(1, account.getUnreadAlerts().size());
         assertTrue(account.getUnreadAlerts().isEmpty());
     }
+
+    @Test
+    public void testOverdraftProtectionAllowsNegativeBalanceWithFee() {
+        BankAccount account = new BankAccount();
+        account.deposit(100.0);
+        account.enableOverdraftProtection(200.0, 25.0);
+
+        account.withdraw(250.0);
+
+        assertEquals(-175.0, account.getBalance(), 0.001);
+        assertTrue(account.getTransactionHistory().contains("Overdraft fee: $25.0"));
+    }
+
+    @Test
+    public void testWithdrawPastOverdraftLimitIsRejected() {
+        BankAccount account = new BankAccount();
+        account.deposit(100.0);
+        account.enableOverdraftProtection(200.0, 25.0);
+
+        assertThrows(IllegalArgumentException.class, () -> account.withdraw(300.0));
+    }
+
+    @Test
+    public void testOverdraftWarningWhenNearLimit() {
+        BankAccount account = new BankAccount();
+        account.deposit(100.0);
+        account.enableOverdraftProtection(200.0, 10.0);
+
+        account.withdraw(250.0);
+
+        List<String> alerts = account.getUnreadAlerts();
+        assertTrue(alerts.stream().anyMatch(alert -> alert.contains("Overdraft warning")));
+    }
 }
