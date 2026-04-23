@@ -92,4 +92,28 @@ public class Bank {
         double growthFactor = Math.pow(1 + monthlyRate, termMonths);
         return principal * monthlyRate * growthFactor / (growthFactor - 1);
     }
+
+    public int estimateMonthsToReachSavingsGoal(double currentBalance, double monthlyDeposit, double apr, double goalAmount) {
+        if (currentBalance < 0 || monthlyDeposit < 0 || apr < 0 || goalAmount <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (currentBalance >= goalAmount) {
+            return 0;
+        }
+
+        double monthlyRate = apr / 100.0 / 12.0;
+        if (monthlyDeposit == 0 && (monthlyRate == 0 || currentBalance == 0)) {
+            throw new IllegalArgumentException();
+        }
+
+        int months = 0;
+        double balance = currentBalance;
+        while (balance < goalAmount) {
+            balance = balance * (1 + monthlyRate) + monthlyDeposit;
+            months++;
+        }
+
+        return months;
+    }
 }

@@ -27,4 +27,10 @@ public class MainMenuTest {
         MainMenu menu = new MainMenu(new Bank(), new Scanner("10000 6 36"));
         assertDoesNotThrow(() -> menu.processInput(13));
     }
+
+    @Test
+    public void testProcessInputEstimatesSavingsGoalTimeline() {
+        MainMenu menu = new MainMenu(new Bank(), new Scanner("1000 200 6 5000"));
+        assertDoesNotThrow(() -> menu.processInput(14));
+    }
 }
