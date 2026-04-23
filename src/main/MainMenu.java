@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 13;
-    private static final int MAX_SELECTION = 13;
+    private static final int EXIT_SELECTION = 14;
+    private static final int MAX_SELECTION = 14;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -33,7 +33,8 @@ public class MainMenu {
         System.out.println("10. View transaction history");
         System.out.println("11. Freeze an account (Admin)");
         System.out.println("12. Unfreeze an account (Admin)");
-        System.out.println("13. Exit the app");
+        System.out.println("13. Calculate loan monthly payment");
+        System.out.println("14. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -82,6 +83,9 @@ public class MainMenu {
                 break;
             case 12:
                 unfreezeAccount();
+                break;
+            case 13:
+                calculateLoanMonthlyPayment();
                 break;
             default:
                 break;
@@ -302,5 +306,21 @@ public class MainMenu {
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
         bank.unfreezeAccount(accountIndex);
         System.out.println("Account unfrozen.");
+    }
+
+    public void calculateLoanMonthlyPayment() {
+        System.out.print("Enter loan principal: ");
+        double principal = keyboardInput.nextDouble();
+        System.out.print("Enter APR (%): ");
+        double apr = keyboardInput.nextDouble();
+        System.out.print("Enter term (months): ");
+        int termMonths = keyboardInput.nextInt();
+
+        try {
+            double monthlyPayment = bank.calculateLoanMonthlyPayment(principal, apr, termMonths);
+            System.out.printf("Estimated monthly payment: $%.2f%n", monthlyPayment);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. Principal and term must be positive, APR cannot be negative.");
+        }
     }
 }

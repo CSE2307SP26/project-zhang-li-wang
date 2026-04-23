@@ -84,4 +84,26 @@ public class BankTest {
         bank.setAccountPin(0, "1234");
         assertFalse(bank.verifyAccountPin(0, "9999"));
     }
+
+    @Test
+    public void testCalculateLoanMonthlyPayment() {
+        Bank bank = new Bank();
+        double monthlyPayment = bank.calculateLoanMonthlyPayment(10000.0, 6.0, 36);
+        assertEquals(304.22, monthlyPayment, 0.01);
+    }
+
+    @Test
+    public void testCalculateLoanMonthlyPaymentZeroApr() {
+        Bank bank = new Bank();
+        double monthlyPayment = bank.calculateLoanMonthlyPayment(1200.0, 0.0, 12);
+        assertEquals(100.0, monthlyPayment, 0.01);
+    }
+
+    @Test
+    public void testCalculateLoanMonthlyPaymentInvalidInput() {
+        Bank bank = new Bank();
+        assertThrows(IllegalArgumentException.class, () -> bank.calculateLoanMonthlyPayment(-1.0, 5.0, 12));
+        assertThrows(IllegalArgumentException.class, () -> bank.calculateLoanMonthlyPayment(1000.0, -1.0, 12));
+        assertThrows(IllegalArgumentException.class, () -> bank.calculateLoanMonthlyPayment(1000.0, 5.0, 0));
+    }
 }
