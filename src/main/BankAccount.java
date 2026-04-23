@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 
 public class BankAccount {
+    private static final double LOW_BALANCE_THRESHOLD = 100.0;
+    private static final double LARGE_TRANSACTION_THRESHOLD = 1000.0;
 
     private static class RecurringBillPayment {
         private final String payee;
@@ -26,6 +28,8 @@ public class BankAccount {
    private boolean isFrozen = false;
     private final List<String> transactionHistory = new ArrayList<>();
     private final List<RecurringBillPayment> scheduledBillPayments = new ArrayList<>();
+    private final List<String> alerts = new ArrayList<>();
+    private int nextUnreadAlertIndex = 0;
 
     public BankAccount() {
         this(0.0);
@@ -40,6 +44,7 @@ public class BankAccount {
         if (amount > 0) {
             this.balance += amount;
             transactionHistory.add("Deposit: $" + amount);
+            createLargeTransactionAlertIfNeeded("deposit", amount);
         } else {
             throw new IllegalArgumentException();
         }
@@ -54,6 +59,8 @@ public class BankAccount {
         }
         balance -= amount;
         transactionHistory.add("Withdrawal: $" + amount);
+        createLargeTransactionAlertIfNeeded("withdrawal", amount);
+        createLowBalanceAlertIfNeeded();
     }
 
     public double getBalance() {
@@ -95,6 +102,7 @@ public class BankAccount {
     public boolean collectFee(double fee) {
         if (fee > 0 && fee <= balance) {
             balance -= fee;
+            createLowBalanceAlertIfNeeded();
             return true;
         }
         return false;
@@ -109,7 +117,10 @@ public class BankAccount {
         return "Balance: $" + balance + ", Interest Rate: " + interestRate + ", " + pinStatus;
     }
     public void freezeAccount() {
-        isFrozen = true;
+        if (!isFrozen) {
+            isFrozen = true;
+            alerts.add("Account has been frozen. Contact the bank if this was unexpected.");
+        }
     }
 
     public void unfreezeAccount() {
@@ -143,6 +154,8 @@ public class BankAccount {
                 if (balance >= payment.amount) {
                     balance -= payment.amount;
                     transactionHistory.add("Bill payment: $" + payment.amount + " to " + payment.payee + " on " + processingDate);
+                    createLargeTransactionAlertIfNeeded("bill payment", payment.amount);
+                    createLowBalanceAlertIfNeeded();
                     processedPayments++;
                 } else {
                     transactionHistory.add("Bill payment skipped (insufficient funds): $" + payment.amount + " to " + payment.payee + " on " + processingDate);
@@ -160,5 +173,31 @@ public class BankAccount {
             paymentDescriptions.add(payment.payee + ": $" + payment.amount + " on day " + payment.dayOfMonth);
         }
         return paymentDescriptions;
+    }
+
+    public List<String> getUnreadAlerts() {
+        List<String> unreadAlerts = new ArrayList<>();
+        for (int i = nextUnreadAlertIndex; i < alerts.size(); i++) {
+            unreadAlerts.add(alerts.get(i));
+        }
+        nextUnreadAlertIndex = alerts.size();
+        return unreadAlerts;
+    }
+
+    public List<String> getAllAlerts() {
+        return new ArrayList<>(alerts);
+    }
+
+    private void createLowBalanceAlertIfNeeded() {
+        // A low-balance alert is generated after money leaves the account.
+        if (balance < LOW_BALANCE_THRESHOLD) {
+            alerts.add("Low balance alert: Your balance is $" + balance + ".");
+        }
+    }
+
+    private void createLargeTransactionAlertIfNeeded(String transactionType, double amount) {
+        if (amount >= LARGE_TRANSACTION_THRESHOLD) {
+            alerts.add("Large transaction alert: A " + transactionType + " of $" + amount + " was processed.");
+        }
     }
 }

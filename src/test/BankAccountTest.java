@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
+import java.util.List;
 
 public class BankAccountTest {
 
@@ -182,5 +183,46 @@ public class BankAccountTest {
         assertEquals(0, processed);
         assertEquals(50.0, account.getBalance(), 0.001);
         assertTrue(account.getTransactionHistory().get(2).contains("insufficient funds"));
+    }
+
+    @Test
+    public void testLowBalanceAlertAfterWithdrawal() {
+        BankAccount account = new BankAccount();
+        account.deposit(150.0);
+        account.withdraw(75.0);
+
+        List<String> alerts = account.getUnreadAlerts();
+        assertEquals(1, alerts.size());
+        assertTrue(alerts.get(0).contains("Low balance alert"));
+    }
+
+    @Test
+    public void testLargeTransactionAlertForDeposit() {
+        BankAccount account = new BankAccount();
+        account.deposit(1200.0);
+
+        List<String> alerts = account.getUnreadAlerts();
+        assertEquals(1, alerts.size());
+        assertTrue(alerts.get(0).contains("Large transaction alert"));
+        assertTrue(alerts.get(0).contains("deposit"));
+    }
+
+    @Test
+    public void testAccountFreezeAlert() {
+        BankAccount account = new BankAccount();
+        account.freezeAccount();
+
+        List<String> alerts = account.getUnreadAlerts();
+        assertEquals(1, alerts.size());
+        assertTrue(alerts.get(0).contains("frozen"));
+    }
+
+    @Test
+    public void testUnreadAlertsReturnedOnlyOnce() {
+        BankAccount account = new BankAccount();
+        account.deposit(1200.0);
+
+        assertEquals(1, account.getUnreadAlerts().size());
+        assertTrue(account.getUnreadAlerts().isEmpty());
     }
 }

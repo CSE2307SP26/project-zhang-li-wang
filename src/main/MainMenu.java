@@ -205,6 +205,7 @@ public class MainMenu {
         int selection = -1;
         while (selection != EXIT_SELECTION) {
             processDueRecurringBillPayments();
+            displayUnreadAlerts();
             displayOptions();
             selection = getUserSelection(MAX_SELECTION);
             if (selection != EXIT_SELECTION) {
@@ -388,6 +389,14 @@ public class MainMenu {
             int processedCount = bank.processScheduledBillPayments(accountIndex, today);
             if (processedCount > 0) {
                 System.out.println("Processed " + processedCount + " scheduled payment(s) for account " + (accountIndex + 1) + ".");
+            }
+        }
+    }
+
+    public void displayUnreadAlerts() {
+        for (int accountIndex = 0; accountIndex < bank.getNumberOfAccounts(); accountIndex++) {
+            for (String alert : bank.getUnreadAlertsForAccount(accountIndex)) {
+                System.out.println("Account " + (accountIndex + 1) + " alert: " + alert);
             }
         }
     }

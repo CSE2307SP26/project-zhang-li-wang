@@ -43,4 +43,13 @@ public class MainMenuTest {
         assertDoesNotThrow(() -> menu.processInput(15));
         assertEquals(1, bank.getAccount(0).getScheduledBillPayments().size());
     }
+
+    @Test
+    public void testDisplayUnreadAlerts() {
+        Bank bank = new Bank();
+        bank.freezeAccount(0);
+        MainMenu menu = new MainMenu(bank, new Scanner(""));
+
+        assertDoesNotThrow(menu::displayUnreadAlerts);
+    }
 }

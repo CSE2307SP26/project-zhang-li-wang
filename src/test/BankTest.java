@@ -157,4 +157,14 @@ public class BankTest {
         assertEquals(1, processed);
         assertEquals(260.0, bank.getBalance(0), 0.001);
     }
+
+    @Test
+    public void testGetUnreadAlertsForAccount() {
+        Bank bank = new Bank();
+        bank.depositToAccount(0, 150.0);
+        bank.withdrawFromAccount(0, 75.0);
+
+        assertEquals(1, bank.getUnreadAlertsForAccount(0).size());
+        assertTrue(bank.getUnreadAlertsForAccount(0).isEmpty());
+    }
 }
