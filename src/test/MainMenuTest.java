@@ -1,6 +1,8 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Scanner;
 
@@ -19,5 +21,46 @@ public class MainMenuTest {
         menu.processInput(4);
 
         assertEquals(before + 1, menu.getNumberOfAccounts());
+    }
+
+    @Test
+    public void testProcessInputCalculatesLoanPayment() {
+        MainMenu menu = new MainMenu(new Bank(), new Scanner("10000 6 36"));
+        assertDoesNotThrow(() -> menu.processInput(13));
+    }
+
+    @Test
+    public void testProcessInputEstimatesSavingsGoalTimeline() {
+        MainMenu menu = new MainMenu(new Bank(), new Scanner("1000 200 6 5000"));
+        assertDoesNotThrow(() -> menu.processInput(14));
+    }
+
+    @Test
+    public void testProcessInputSchedulesRecurringBillPayment() {
+        Bank bank = new Bank();
+        bank.setAccountPin(0, "1234");
+        MainMenu menu = new MainMenu(bank, new Scanner("1 1234\nUtilities\n75 20"));
+
+        assertDoesNotThrow(() -> menu.processInput(15));
+        assertEquals(1, bank.getAccount(0).getScheduledBillPayments().size());
+    }
+
+    @Test
+    public void testDisplayUnreadAlerts() {
+        Bank bank = new Bank();
+        bank.freezeAccount(0);
+        MainMenu menu = new MainMenu(bank, new Scanner(""));
+
+        assertDoesNotThrow(menu::displayUnreadAlerts);
+    }
+
+    @Test
+    public void testProcessInputEnablesOverdraftProtection() {
+        Bank bank = new Bank();
+        bank.setAccountPin(0, "1234");
+        MainMenu menu = new MainMenu(bank, new Scanner("1 1234 300 20"));
+
+        assertDoesNotThrow(() -> menu.processInput(16));
+        assertTrue(bank.getAccount(0).isOverdraftProtectionEnabled());
     }
 }

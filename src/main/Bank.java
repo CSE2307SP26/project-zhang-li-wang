@@ -1,6 +1,8 @@
 package main;
 
 import java.util.LinkedList;
+import java.time.LocalDate;
+import java.util.List;
 
 public class Bank {
 
@@ -57,8 +59,79 @@ public class Bank {
         return userAccounts.get(accountIndex).setPin(pin);
     }
 
+    public boolean verifyAccountPin(int accountIndex, String pin) {
+        return userAccounts.get(accountIndex).checkPin(pin);
+    }
+
+
     public boolean collectFeeFromAccount(int accountIndex, double fee) {
         return userAccounts.get(accountIndex).collectFee(fee);
     }
     
+
+    public void freezeAccount(int accountIndex) {
+       userAccounts.get(accountIndex).freezeAccount();
+  }
+
+    public void unfreezeAccount(int accountIndex) {
+        userAccounts.get(accountIndex).unfreezeAccount();
+    }
+
+    public boolean isAccountFrozen(int accountIndex) {
+        return userAccounts.get(accountIndex).isFrozen();
+    }
+
+    public double calculateLoanMonthlyPayment(double principal, double apr, int termMonths) {
+        if (principal <= 0 || apr < 0 || termMonths <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        double monthlyRate = apr / 100.0 / 12.0;
+        if (monthlyRate == 0) {
+            return principal / termMonths;
+        }
+
+        double growthFactor = Math.pow(1 + monthlyRate, termMonths);
+        return principal * monthlyRate * growthFactor / (growthFactor - 1);
+    }
+
+    public int estimateMonthsToReachSavingsGoal(double currentBalance, double monthlyDeposit, double apr, double goalAmount) {
+        if (currentBalance < 0 || monthlyDeposit < 0 || apr < 0 || goalAmount <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (currentBalance >= goalAmount) {
+            return 0;
+        }
+
+        double monthlyRate = apr / 100.0 / 12.0;
+        if (monthlyDeposit == 0 && (monthlyRate == 0 || currentBalance == 0)) {
+            throw new IllegalArgumentException();
+        }
+
+        int months = 0;
+        double balance = currentBalance;
+        while (balance < goalAmount) {
+            balance = balance * (1 + monthlyRate) + monthlyDeposit;
+            months++;
+        }
+
+        return months;
+    }
+
+    public void scheduleRecurringBillPayment(int accountIndex, String payee, double amount, int dayOfMonth) {
+        userAccounts.get(accountIndex).scheduleRecurringBillPayment(payee, amount, dayOfMonth);
+    }
+
+    public int processScheduledBillPayments(int accountIndex, LocalDate processingDate) {
+        return userAccounts.get(accountIndex).processScheduledPayments(processingDate);
+    }
+
+    public List<String> getUnreadAlertsForAccount(int accountIndex) {
+        return userAccounts.get(accountIndex).getUnreadAlerts();
+    }
+
+    public void enableOverdraftProtection(int accountIndex, double limit, double fee) {
+        userAccounts.get(accountIndex).enableOverdraftProtection(limit, fee);
+    }
 }

@@ -1,11 +1,12 @@
 package main;
 
 import java.util.Scanner;
+import java.time.LocalDate;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 10;
-    private static final int MAX_SELECTION = 10;
+    private static final int EXIT_SELECTION = 17;
+    private static final int MAX_SELECTION = 17;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -30,7 +31,14 @@ public class MainMenu {
         System.out.println("7. Add interest payment (Admin)");
         System.out.println("8. Set account PIN");
         System.out.println("9. Collect fee from an existing account (Admin)");
-        System.out.println("10. Exit the app");
+        System.out.println("10. View transaction history");
+        System.out.println("11. Freeze an account (Admin)");
+        System.out.println("12. Unfreeze an account (Admin)");
+        System.out.println("13. Calculate loan monthly payment");
+        System.out.println("14. Estimate months to reach savings goal");
+        System.out.println("15. Schedule recurring bill payment");
+        System.out.println("16. Enable overdraft protection");
+        System.out.println("17. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -71,6 +79,27 @@ public class MainMenu {
             case 9:
                 collectFee();
                 break;
+            case 10:
+                viewTransactionHistory();
+                break;
+            case 11:
+                freezeAccount();
+                break;
+            case 12:
+                unfreezeAccount();
+                break;
+            case 13:
+                calculateLoanMonthlyPayment();
+                break;
+            case 14:
+                estimateSavingsGoalTimeline();
+                break;
+            case 15:
+                scheduleRecurringBillPayment();
+                break;
+            case 16:
+                enableOverdraftProtection();
+                break;
             default:
                 break;
         }
@@ -79,7 +108,7 @@ public class MainMenu {
     public void performDeposit() {
         double depositAmount = -1;
         int accountIndex = 0;
-        while (depositAmount < 0) {
+        while (depositAmount <= 0) {
             System.out.print("Which account would you like to deposit to: ");
             accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
             System.out.print("How much would you like to deposit: ");
@@ -97,13 +126,28 @@ public class MainMenu {
     public void performWithdraw() {
         System.out.print("Which account would you like to withdraw from: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        System.out.print("Enter PIN for this account: ");
+        String pin = keyboardInput.next();
+
+        if (!bank.verifyAccountPin(accountIndex, pin)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        if (bank.isAccountFrozen(accountIndex)) {
+            System.out.println("This account is frozen.");
+            return;
+        }
+
         System.out.print("How much would you like to withdraw: ");
         double withdrawAmount = keyboardInput.nextDouble();
+
         try {
             bank.withdrawFromAccount(accountIndex, withdrawAmount);
             System.out.println("Withdrawal successful.");
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid operation. Please try again."); 
+            System.out.println("Invalid operation. Please try again.");
         }
     }
 
@@ -115,9 +159,17 @@ public class MainMenu {
     public void closeAccount() {
         System.out.print("Which account would you like to close: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
         try {
             bank.closeAccount(accountIndex);
             System.out.println("Account closed.");
+        } catch (IllegalStateException e) {
+            System.out.println("You cannot close the only remaining account.");
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid operation. Please try again.");
         }
@@ -125,23 +177,39 @@ public class MainMenu {
 
     public void performTransfer() {
         double transferAmount = 0.0;
+
         System.out.print("Which account would you like to transfer from: ");
         int fromIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(fromIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        if (bank.isAccountFrozen(fromIndex)) {
+            System.out.println("This account is frozen.");
+            return;
+        }
+
         System.out.print("Which account would you like to transfer to: ");
         int toIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
         System.out.print("How much would you like to transfer: ");
         transferAmount = keyboardInput.nextDouble();
+
         try {
             bank.transfer(fromIndex, toIndex, transferAmount);
             System.out.println("Transfer successful.");
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid operation. Please try again.");
         }
-    }
+    }  
 
     public void run() {
         int selection = -1;
         while (selection != EXIT_SELECTION) {
+            processDueRecurringBillPayments();
+            displayUnreadAlerts();
             displayOptions();
             selection = getUserSelection(MAX_SELECTION);
             if (selection != EXIT_SELECTION) {
@@ -166,6 +234,12 @@ public class MainMenu {
     public void checkBalance() {
         System.out.print("Which account would you like to check: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
         double balance = bank.getBalance(accountIndex);
         System.out.println("Current balance: $" + balance);
     }
@@ -203,6 +277,18 @@ public class MainMenu {
         System.out.println(account.getSummary());
     }
 
+    public void viewTransactionHistory() {
+        System.out.print("Which account would you like to view: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        BankAccount account = bank.getAccount(accountIndex);
+        for (String entry : account.getTransactionHistory()) {
+            System.out.println(entry);
+        }
+        if (account.getTransactionHistory().isEmpty()) {
+            System.out.println("No transaction history available.");
+        }
+    }
+
     public static void main(String[] args) {
         MainMenu bankApp = new MainMenu();
         bankApp.run();
@@ -214,5 +300,130 @@ public class MainMenu {
 
     public BankAccount getAccount(int index) {
         return bank.getAccount(index);
+    }
+
+    
+    public boolean verifyPinForAccount(int accountIndex) {
+        System.out.print("Enter PIN for this account: ");
+        String pin = keyboardInput.next();
+        return bank.verifyAccountPin(accountIndex, pin);
+    }
+
+    public void freezeAccount() {
+        System.out.print("Which account would you like to freeze: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        bank.freezeAccount(accountIndex);
+        System.out.println("Account frozen.");
+    }
+
+    public void unfreezeAccount() {
+        System.out.print("Which account would you like to unfreeze: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+        bank.unfreezeAccount(accountIndex);
+        System.out.println("Account unfrozen.");
+    }
+
+    public void calculateLoanMonthlyPayment() {
+        System.out.print("Enter loan principal: ");
+        double principal = keyboardInput.nextDouble();
+        System.out.print("Enter APR (%): ");
+        double apr = keyboardInput.nextDouble();
+        System.out.print("Enter term (months): ");
+        int termMonths = keyboardInput.nextInt();
+
+        try {
+            double monthlyPayment = bank.calculateLoanMonthlyPayment(principal, apr, termMonths);
+            System.out.printf("Estimated monthly payment: $%.2f%n", monthlyPayment);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. Principal and term must be positive, APR cannot be negative.");
+        }
+    }
+
+    public void estimateSavingsGoalTimeline() {
+        System.out.print("Enter current savings amount: ");
+        double currentBalance = keyboardInput.nextDouble();
+        System.out.print("Enter monthly deposit amount: ");
+        double monthlyDeposit = keyboardInput.nextDouble();
+        System.out.print("Enter annual interest rate (%): ");
+        double apr = keyboardInput.nextDouble();
+        System.out.print("Enter savings goal amount: ");
+        double goalAmount = keyboardInput.nextDouble();
+
+        try {
+            int months = bank.estimateMonthsToReachSavingsGoal(currentBalance, monthlyDeposit, apr, goalAmount);
+            System.out.println("Estimated months to reach savings goal: " + months);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. Please enter valid positive amounts and a reachable goal.");
+        }
+    }
+
+    public void scheduleRecurringBillPayment() {
+        System.out.print("Which account would you like to schedule this payment from: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        if (bank.isAccountFrozen(accountIndex)) {
+            System.out.println("This account is frozen.");
+            return;
+        }
+
+        keyboardInput.nextLine();
+        System.out.print("Enter bill name/payee: ");
+        String payee = keyboardInput.nextLine();
+        System.out.print("Enter recurring payment amount: ");
+        double amount = keyboardInput.nextDouble();
+        System.out.print("Enter billing day of month (1-31): ");
+        int dayOfMonth = keyboardInput.nextInt();
+
+        try {
+            bank.scheduleRecurringBillPayment(accountIndex, payee, amount, dayOfMonth);
+            System.out.println("Recurring bill payment scheduled successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid bill payment details. Please try again.");
+        }
+    }
+
+    public void processDueRecurringBillPayments() {
+        LocalDate today = LocalDate.now();
+        for (int accountIndex = 0; accountIndex < bank.getNumberOfAccounts(); accountIndex++) {
+            int processedCount = bank.processScheduledBillPayments(accountIndex, today);
+            if (processedCount > 0) {
+                System.out.println("Processed " + processedCount + " scheduled payment(s) for account " + (accountIndex + 1) + ".");
+            }
+        }
+    }
+
+    public void displayUnreadAlerts() {
+        for (int accountIndex = 0; accountIndex < bank.getNumberOfAccounts(); accountIndex++) {
+            for (String alert : bank.getUnreadAlertsForAccount(accountIndex)) {
+                System.out.println("Account " + (accountIndex + 1) + " alert: " + alert);
+            }
+        }
+    }
+
+    public void enableOverdraftProtection() {
+        System.out.print("Which account would you like to enable overdraft protection on: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        System.out.print("Enter overdraft limit: ");
+        double limit = keyboardInput.nextDouble();
+        System.out.print("Enter overdraft fee: ");
+        double fee = keyboardInput.nextDouble();
+
+        try {
+            bank.enableOverdraftProtection(accountIndex, limit, fee);
+            System.out.println("Overdraft protection enabled.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid overdraft settings.");
+        }
     }
 }
