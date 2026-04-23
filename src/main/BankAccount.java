@@ -8,6 +8,7 @@ import java.time.YearMonth;
 public class BankAccount {
     private static final double LOW_BALANCE_THRESHOLD = 100.0;
     private static final double LARGE_TRANSACTION_THRESHOLD = 1000.0;
+    private static final double OVERDRAFT_WARNING_RATIO = 0.8;
 
     private static class RecurringBillPayment {
         private final String payee;
@@ -26,6 +27,9 @@ public class BankAccount {
     private double interestRate;
     private String pin;
    private boolean isFrozen = false;
+    private boolean overdraftProtectionEnabled = false;
+    private double overdraftLimit = 0.0;
+    private double overdraftFee = 0.0;
     private final List<String> transactionHistory = new ArrayList<>();
     private final List<RecurringBillPayment> scheduledBillPayments = new ArrayList<>();
     private final List<String> alerts = new ArrayList<>();
@@ -54,11 +58,7 @@ public class BankAccount {
         if (amount <= 0) {
             throw new IllegalArgumentException();
         }
-        if (amount > balance) {
-            throw new IllegalArgumentException();
-        }
-        balance -= amount;
-        transactionHistory.add("Withdrawal: $" + amount);
+        processDebitWithOverdraft("Withdrawal: $" + amount, "withdrawal", amount);
         createLargeTransactionAlertIfNeeded("withdrawal", amount);
         createLowBalanceAlertIfNeeded();
     }
@@ -151,13 +151,16 @@ public class BankAccount {
         for (RecurringBillPayment payment : scheduledBillPayments) {
             // If the app was not opened exactly on the due date, still process once for that month.
             if (processingDate.getDayOfMonth() >= payment.dayOfMonth && !currentMonth.equals(payment.lastProcessedMonth)) {
-                if (balance >= payment.amount) {
-                    balance -= payment.amount;
-                    transactionHistory.add("Bill payment: $" + payment.amount + " to " + payment.payee + " on " + processingDate);
+                try {
+                    processDebitWithOverdraft(
+                        "Bill payment: $" + payment.amount + " to " + payment.payee + " on " + processingDate,
+                        "bill payment",
+                        payment.amount
+                    );
                     createLargeTransactionAlertIfNeeded("bill payment", payment.amount);
                     createLowBalanceAlertIfNeeded();
                     processedPayments++;
-                } else {
+                } catch (IllegalArgumentException e) {
                     transactionHistory.add("Bill payment skipped (insufficient funds): $" + payment.amount + " to " + payment.payee + " on " + processingDate);
                 }
                 payment.lastProcessedMonth = currentMonth;
@@ -188,6 +191,19 @@ public class BankAccount {
         return new ArrayList<>(alerts);
     }
 
+    public void enableOverdraftProtection(double limit, double fee) {
+        if (limit <= 0 || fee < 0) {
+            throw new IllegalArgumentException();
+        }
+        overdraftProtectionEnabled = true;
+        overdraftLimit = limit;
+        overdraftFee = fee;
+    }
+
+    public boolean isOverdraftProtectionEnabled() {
+        return overdraftProtectionEnabled;
+    }
+
     private void createLowBalanceAlertIfNeeded() {
         // A low-balance alert is generated after money leaves the account.
         if (balance < LOW_BALANCE_THRESHOLD) {
@@ -198,6 +214,47 @@ public class BankAccount {
     private void createLargeTransactionAlertIfNeeded(String transactionType, double amount) {
         if (amount >= LARGE_TRANSACTION_THRESHOLD) {
             alerts.add("Large transaction alert: A " + transactionType + " of $" + amount + " was processed.");
+        }
+    }
+
+    private void processDebitWithOverdraft(String transactionEntry, String transactionType, double amount) {
+        double projectedBalance = balance - amount;
+        boolean usesOverdraft = projectedBalance < 0;
+
+        if (usesOverdraft && !overdraftProtectionEnabled) {
+            throw new IllegalArgumentException();
+        }
+
+        double finalProjectedBalance = projectedBalance;
+        if (usesOverdraft) {
+            finalProjectedBalance -= overdraftFee;
+        }
+
+        if (finalProjectedBalance < -overdraftLimit) {
+            throw new IllegalArgumentException();
+        }
+
+        balance = projectedBalance;
+        transactionHistory.add(transactionEntry);
+
+        if (usesOverdraft && overdraftFee > 0) {
+            // Fee is applied immediately when overdraft is used.
+            balance -= overdraftFee;
+            transactionHistory.add("Overdraft fee: $" + overdraftFee);
+            alerts.add("Overdraft fee charged: $" + overdraftFee + " after " + transactionType + ".");
+        }
+
+        createOverdraftWarningIfNeeded();
+    }
+
+    private void createOverdraftWarningIfNeeded() {
+        if (!overdraftProtectionEnabled || balance >= 0) {
+            return;
+        }
+
+        double usedAmount = Math.abs(balance);
+        if (usedAmount >= overdraftLimit * OVERDRAFT_WARNING_RATIO) {
+            alerts.add("Overdraft warning: You are close to your limit. Used $" + usedAmount + " of $" + overdraftLimit + ".");
         }
     }
 }

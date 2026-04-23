@@ -130,4 +130,8 @@ public class Bank {
     public List<String> getUnreadAlertsForAccount(int accountIndex) {
         return userAccounts.get(accountIndex).getUnreadAlerts();
     }
+
+    public void enableOverdraftProtection(int accountIndex, double limit, double fee) {
+        userAccounts.get(accountIndex).enableOverdraftProtection(limit, fee);
+    }
 }

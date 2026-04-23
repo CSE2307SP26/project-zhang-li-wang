@@ -167,4 +167,15 @@ public class BankTest {
         assertEquals(1, bank.getUnreadAlertsForAccount(0).size());
         assertTrue(bank.getUnreadAlertsForAccount(0).isEmpty());
     }
+
+    @Test
+    public void testEnableOverdraftProtectionViaBank() {
+        Bank bank = new Bank();
+        bank.depositToAccount(0, 100.0);
+        bank.enableOverdraftProtection(0, 300.0, 20.0);
+
+        bank.withdrawFromAccount(0, 250.0);
+
+        assertEquals(-170.0, bank.getBalance(0), 0.001);
+    }
 }
