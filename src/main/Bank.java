@@ -1,6 +1,7 @@
 package main;
 
 import java.util.LinkedList;
+import java.time.LocalDate;
 
 public class Bank {
 
@@ -115,5 +116,13 @@ public class Bank {
         }
 
         return months;
+    }
+
+    public void scheduleRecurringBillPayment(int accountIndex, String payee, double amount, int dayOfMonth) {
+        userAccounts.get(accountIndex).scheduleRecurringBillPayment(payee, amount, dayOfMonth);
+    }
+
+    public int processScheduledBillPayments(int accountIndex, LocalDate processingDate) {
+        return userAccounts.get(accountIndex).processScheduledPayments(processingDate);
     }
 }

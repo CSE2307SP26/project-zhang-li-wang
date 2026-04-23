@@ -1,11 +1,12 @@
 package main;
 
 import java.util.Scanner;
+import java.time.LocalDate;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 15;
-    private static final int MAX_SELECTION = 15;
+    private static final int EXIT_SELECTION = 16;
+    private static final int MAX_SELECTION = 16;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -35,7 +36,8 @@ public class MainMenu {
         System.out.println("12. Unfreeze an account (Admin)");
         System.out.println("13. Calculate loan monthly payment");
         System.out.println("14. Estimate months to reach savings goal");
-        System.out.println("15. Exit the app");
+        System.out.println("15. Schedule recurring bill payment");
+        System.out.println("16. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -90,6 +92,9 @@ public class MainMenu {
                 break;
             case 14:
                 estimateSavingsGoalTimeline();
+                break;
+            case 15:
+                scheduleRecurringBillPayment();
                 break;
             default:
                 break;
@@ -199,6 +204,7 @@ public class MainMenu {
     public void run() {
         int selection = -1;
         while (selection != EXIT_SELECTION) {
+            processDueRecurringBillPayments();
             displayOptions();
             selection = getUserSelection(MAX_SELECTION);
             if (selection != EXIT_SELECTION) {
@@ -343,6 +349,46 @@ public class MainMenu {
             System.out.println("Estimated months to reach savings goal: " + months);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid input. Please enter valid positive amounts and a reachable goal.");
+        }
+    }
+
+    public void scheduleRecurringBillPayment() {
+        System.out.print("Which account would you like to schedule this payment from: ");
+        int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
+        if (bank.isAccountFrozen(accountIndex)) {
+            System.out.println("This account is frozen.");
+            return;
+        }
+
+        keyboardInput.nextLine();
+        System.out.print("Enter bill name/payee: ");
+        String payee = keyboardInput.nextLine();
+        System.out.print("Enter recurring payment amount: ");
+        double amount = keyboardInput.nextDouble();
+        System.out.print("Enter billing day of month (1-31): ");
+        int dayOfMonth = keyboardInput.nextInt();
+
+        try {
+            bank.scheduleRecurringBillPayment(accountIndex, payee, amount, dayOfMonth);
+            System.out.println("Recurring bill payment scheduled successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid bill payment details. Please try again.");
+        }
+    }
+
+    public void processDueRecurringBillPayments() {
+        LocalDate today = LocalDate.now();
+        for (int accountIndex = 0; accountIndex < bank.getNumberOfAccounts(); accountIndex++) {
+            int processedCount = bank.processScheduledBillPayments(accountIndex, today);
+            if (processedCount > 0) {
+                System.out.println("Processed " + processedCount + " scheduled payment(s) for account " + (accountIndex + 1) + ".");
+            }
         }
     }
 }
