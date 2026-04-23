@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
 
 public class BankAccountTest {
 
@@ -142,5 +143,44 @@ public class BankAccountTest {
         account.freezeAccount();
         account.unfreezeAccount();
         assertFalse(account.isFrozen());
+    }
+
+    @Test
+    public void testScheduleRecurringBillPaymentAndProcessOnDueDate() {
+        BankAccount account = new BankAccount();
+        account.deposit(1000.0);
+        account.scheduleRecurringBillPayment("Utilities", 150.0, 10);
+
+        int processed = account.processScheduledPayments(LocalDate.of(2026, 4, 10));
+
+        assertEquals(1, processed);
+        assertEquals(850.0, account.getBalance(), 0.001);
+        assertEquals(3, account.getTransactionHistory().size());
+    }
+
+    @Test
+    public void testRecurringPaymentProcessesOnlyOncePerMonth() {
+        BankAccount account = new BankAccount();
+        account.deposit(500.0);
+        account.scheduleRecurringBillPayment("Rent", 200.0, 5);
+
+        account.processScheduledPayments(LocalDate.of(2026, 4, 5));
+        int secondAttempt = account.processScheduledPayments(LocalDate.of(2026, 4, 20));
+
+        assertEquals(0, secondAttempt);
+        assertEquals(300.0, account.getBalance(), 0.001);
+    }
+
+    @Test
+    public void testRecurringPaymentSkippedWhenInsufficientFunds() {
+        BankAccount account = new BankAccount();
+        account.deposit(50.0);
+        account.scheduleRecurringBillPayment("Internet", 80.0, 15);
+
+        int processed = account.processScheduledPayments(LocalDate.of(2026, 4, 15));
+
+        assertEquals(0, processed);
+        assertEquals(50.0, account.getBalance(), 0.001);
+        assertTrue(account.getTransactionHistory().get(2).contains("insufficient funds"));
     }
 }

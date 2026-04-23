@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
 
 import main.Bank;
 import main.BankAccount;
@@ -143,5 +144,17 @@ public class BankTest {
         assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(1000.0, 100.0, -1.0, 2000.0));
         assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(1000.0, 0.0, 0.0, 2000.0));
         assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(0.0, 0.0, 6.0, 500.0));
+    }
+
+    @Test
+    public void testScheduleRecurringBillPaymentViaBankAndProcess() {
+        Bank bank = new Bank();
+        bank.depositToAccount(0, 300.0);
+        bank.scheduleRecurringBillPayment(0, "Water", 40.0, 12);
+
+        int processed = bank.processScheduledBillPayments(0, LocalDate.of(2026, 4, 12));
+
+        assertEquals(1, processed);
+        assertEquals(260.0, bank.getBalance(0), 0.001);
     }
 }

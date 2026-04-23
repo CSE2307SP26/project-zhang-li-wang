@@ -33,4 +33,14 @@ public class MainMenuTest {
         MainMenu menu = new MainMenu(new Bank(), new Scanner("1000 200 6 5000"));
         assertDoesNotThrow(() -> menu.processInput(14));
     }
+
+    @Test
+    public void testProcessInputSchedulesRecurringBillPayment() {
+        Bank bank = new Bank();
+        bank.setAccountPin(0, "1234");
+        MainMenu menu = new MainMenu(bank, new Scanner("1 1234\nUtilities\n75 20"));
+
+        assertDoesNotThrow(() -> menu.processInput(15));
+        assertEquals(1, bank.getAccount(0).getScheduledBillPayments().size());
+    }
 }
