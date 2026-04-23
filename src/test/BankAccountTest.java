@@ -86,7 +86,7 @@ public class BankAccountTest {
         assertFalse(result);
         assertEquals(50.0, account.getBalance(), 0.001);
     }
-}
+
     @Test
     public void testSetInvalidPinWithWrongLength() {
         BankAccount account = new BankAccount();
@@ -95,4 +95,4 @@ public class BankAccountTest {
         assertNull(account.getPin());
     }
 
-    
+}
