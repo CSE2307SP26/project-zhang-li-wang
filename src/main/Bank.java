@@ -2,6 +2,7 @@ package main;
 
 import java.util.LinkedList;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Bank {
 
@@ -124,5 +125,9 @@ public class Bank {
 
     public int processScheduledBillPayments(int accountIndex, LocalDate processingDate) {
         return userAccounts.get(accountIndex).processScheduledPayments(processingDate);
+    }
+
+    public List<String> getUnreadAlertsForAccount(int accountIndex) {
+        return userAccounts.get(accountIndex).getUnreadAlerts();
     }
 }
