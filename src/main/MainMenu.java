@@ -79,7 +79,7 @@ public class MainMenu {
     public void performDeposit() {
         double depositAmount = -1;
         int accountIndex = 0;
-        while (depositAmount < 0) {
+        while (depositAmount <= 0) {
             System.out.print("Which account would you like to deposit to: ");
             accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
             System.out.print("How much would you like to deposit: ");
@@ -97,13 +97,23 @@ public class MainMenu {
     public void performWithdraw() {
         System.out.print("Which account would you like to withdraw from: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        System.out.print("Enter PIN for this account: ");
+        String pin = keyboardInput.next();
+
+        if (!bank.verifyAccountPin(accountIndex, pin)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
         System.out.print("How much would you like to withdraw: ");
         double withdrawAmount = keyboardInput.nextDouble();
+
         try {
             bank.withdrawFromAccount(accountIndex, withdrawAmount);
             System.out.println("Withdrawal successful.");
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid operation. Please try again."); 
+            System.out.println("Invalid operation. Please try again.");
         }
     }
 
@@ -115,9 +125,17 @@ public class MainMenu {
     public void closeAccount() {
         System.out.print("Which account would you like to close: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
         try {
             bank.closeAccount(accountIndex);
             System.out.println("Account closed.");
+        } catch (IllegalStateException e) {
+            System.out.println("You cannot close the only remaining account.");
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid operation. Please try again.");
         }
@@ -125,19 +143,28 @@ public class MainMenu {
 
     public void performTransfer() {
         double transferAmount = 0.0;
+
         System.out.print("Which account would you like to transfer from: ");
         int fromIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(fromIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
         System.out.print("Which account would you like to transfer to: ");
         int toIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
         System.out.print("How much would you like to transfer: ");
         transferAmount = keyboardInput.nextDouble();
+
         try {
             bank.transfer(fromIndex, toIndex, transferAmount);
             System.out.println("Transfer successful.");
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid operation. Please try again.");
-        }
-    }
+        } 
+    }   
 
     public void run() {
         int selection = -1;
@@ -166,6 +193,12 @@ public class MainMenu {
     public void checkBalance() {
         System.out.print("Which account would you like to check: ");
         int accountIndex = getUserSelection(bank.getNumberOfAccounts()) - 1;
+
+        if (!verifyPinForAccount(accountIndex)) {
+            System.out.println("Incorrect PIN.");
+            return;
+        }
+
         double balance = bank.getBalance(accountIndex);
         System.out.println("Current balance: $" + balance);
     }
@@ -214,5 +247,12 @@ public class MainMenu {
 
     public BankAccount getAccount(int index) {
         return bank.getAccount(index);
+    }
+
+    
+    public boolean verifyPinForAccount(int accountIndex) {
+        System.out.print("Enter PIN for this account: ");
+        String pin = keyboardInput.next();
+        return bank.verifyAccountPin(accountIndex, pin);
     }
 }

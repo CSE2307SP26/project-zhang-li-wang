@@ -57,6 +57,11 @@ public class Bank {
         return userAccounts.get(accountIndex).setPin(pin);
     }
 
+    public boolean verifyAccountPin(int accountIndex, String pin) {
+        return userAccounts.get(accountIndex).checkPin(pin);
+    }
+
+
     public boolean collectFeeFromAccount(int accountIndex, double fee) {
         return userAccounts.get(accountIndex).collectFee(fee);
     }

@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -60,5 +61,20 @@ public class BankTest {
         assertTrue(summary.contains("100.0"));
         assertTrue(summary.contains("0.05"));
         assertTrue(summary.contains("No PIN set"));
+    }
+
+
+    @Test
+    public void testVerifyAccountPin() {
+        Bank bank = new Bank();
+        bank.setAccountPin(0, "1234");
+        assertTrue(bank.verifyAccountPin(0, "1234"));
+    }
+
+    @Test
+    public void testVerifyAccountPinWrong() {
+        Bank bank = new Bank();
+        bank.setAccountPin(0, "1234");
+        assertFalse(bank.verifyAccountPin(0, "9999"));
     }
 }
