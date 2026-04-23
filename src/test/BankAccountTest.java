@@ -259,3 +259,4 @@ public class BankAccountTest {
         assertTrue(alerts.stream().anyMatch(alert -> alert.contains("Overdraft warning")));
     }
 }
+}  
