@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 14;
-    private static final int MAX_SELECTION = 14;
+    private static final int EXIT_SELECTION = 15;
+    private static final int MAX_SELECTION = 15;
 
     private final Bank bank;
     private Scanner keyboardInput;
@@ -34,7 +34,8 @@ public class MainMenu {
         System.out.println("11. Freeze an account (Admin)");
         System.out.println("12. Unfreeze an account (Admin)");
         System.out.println("13. Calculate loan monthly payment");
-        System.out.println("14. Exit the app");
+        System.out.println("14. Estimate months to reach savings goal");
+        System.out.println("15. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -86,6 +87,9 @@ public class MainMenu {
                 break;
             case 13:
                 calculateLoanMonthlyPayment();
+                break;
+            case 14:
+                estimateSavingsGoalTimeline();
                 break;
             default:
                 break;
@@ -321,6 +325,24 @@ public class MainMenu {
             System.out.printf("Estimated monthly payment: $%.2f%n", monthlyPayment);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid input. Principal and term must be positive, APR cannot be negative.");
+        }
+    }
+
+    public void estimateSavingsGoalTimeline() {
+        System.out.print("Enter current savings amount: ");
+        double currentBalance = keyboardInput.nextDouble();
+        System.out.print("Enter monthly deposit amount: ");
+        double monthlyDeposit = keyboardInput.nextDouble();
+        System.out.print("Enter annual interest rate (%): ");
+        double apr = keyboardInput.nextDouble();
+        System.out.print("Enter savings goal amount: ");
+        double goalAmount = keyboardInput.nextDouble();
+
+        try {
+            int months = bank.estimateMonthsToReachSavingsGoal(currentBalance, monthlyDeposit, apr, goalAmount);
+            System.out.println("Estimated months to reach savings goal: " + months);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. Please enter valid positive amounts and a reachable goal.");
         }
     }
 }

@@ -106,4 +106,42 @@ public class BankTest {
         assertThrows(IllegalArgumentException.class, () -> bank.calculateLoanMonthlyPayment(1000.0, -1.0, 12));
         assertThrows(IllegalArgumentException.class, () -> bank.calculateLoanMonthlyPayment(1000.0, 5.0, 0));
     }
+
+    @Test
+    public void testEstimateMonthsToReachSavingsGoalWithInterest() {
+        Bank bank = new Bank();
+        int months = bank.estimateMonthsToReachSavingsGoal(1000.0, 200.0, 6.0, 5000.0);
+        assertEquals(19, months);
+    }
+
+    @Test
+    public void testEstimateMonthsToReachSavingsGoalWithoutInterest() {
+        Bank bank = new Bank();
+        int months = bank.estimateMonthsToReachSavingsGoal(1000.0, 200.0, 0.0, 2000.0);
+        assertEquals(5, months);
+    }
+
+    @Test
+    public void testEstimateMonthsToReachSavingsGoalAlreadyReached() {
+        Bank bank = new Bank();
+        int months = bank.estimateMonthsToReachSavingsGoal(3000.0, 100.0, 5.0, 2500.0);
+        assertEquals(0, months);
+    }
+
+    @Test
+    public void testEstimateMonthsToReachSavingsGoalWithZeroMonthlyDeposit() {
+        Bank bank = new Bank();
+        int months = bank.estimateMonthsToReachSavingsGoal(1000.0, 0.0, 12.0, 1100.0);
+        assertEquals(10, months);
+    }
+
+    @Test
+    public void testEstimateMonthsToReachSavingsGoalInvalidOrUnreachableInput() {
+        Bank bank = new Bank();
+        assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(-1.0, 100.0, 5.0, 2000.0));
+        assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(1000.0, -1.0, 5.0, 2000.0));
+        assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(1000.0, 100.0, -1.0, 2000.0));
+        assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(1000.0, 0.0, 0.0, 2000.0));
+        assertThrows(IllegalArgumentException.class, () -> bank.estimateMonthsToReachSavingsGoal(0.0, 0.0, 6.0, 500.0));
+    }
 }
