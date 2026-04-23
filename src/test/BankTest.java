@@ -69,6 +69,7 @@ public class BankTest {
         bank.depositToAccount(0, 42.0);
 
         assertEquals("Deposit: $42.0", bank.getAccount(0).getTransactionHistory().get(0));
+    }
 
     @Test
     public void testVerifyAccountPin() {

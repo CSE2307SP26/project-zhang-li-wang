@@ -66,4 +66,16 @@ public class Bank {
         return userAccounts.get(accountIndex).collectFee(fee);
     }
     
+
+    public void freezeAccount(int accountIndex) {
+       userAccounts.get(accountIndex).freezeAccount();
+  }
+
+    public void unfreezeAccount(int accountIndex) {
+        userAccounts.get(accountIndex).unfreezeAccount();
+    }
+
+    public boolean isAccountFrozen(int accountIndex) {
+        return userAccounts.get(accountIndex).isFrozen();
+    }
 }

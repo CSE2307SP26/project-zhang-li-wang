@@ -8,7 +8,7 @@ public class BankAccount {
     private double balance;
     private double interestRate;
     private String pin;
-    private boolean isClosed = false;
+   private boolean isFrozen = false;
     private final List<String> transactionHistory = new ArrayList<>();
 
     public BankAccount() {
@@ -91,5 +91,16 @@ public class BankAccount {
     public String getSummary() {
         String pinStatus = (pin != null) ? "PIN set" : "No PIN set";
         return "Balance: $" + balance + ", Interest Rate: " + interestRate + ", " + pinStatus;
+    }
+    public void freezeAccount() {
+        isFrozen = true;
+    }
+
+    public void unfreezeAccount() {
+        isFrozen = false;
+    }
+
+    public boolean isFrozen() {
+        return isFrozen;
     }
 }
